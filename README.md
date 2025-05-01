@@ -15,17 +15,26 @@ A web application that provides a chat interface for LM Studio with RAG (Retriev
 ## Tech Stack
 
 - **Backend**:
-  - Flask 2.0.1
+  - Flask 2.0.1 with Werkzeug 2.0.1
+  - Flask-WTF 1.2.2 (Form handling)
+  - Flask-Limiter 3.12 (Rate limiting)
   - PyPDF 5.4.0
   - Transformers 4.36+
   - scikit-learn 1.3+
   - NumPy 1.24+
   - PyTorch 2.6+
+  - Markdown2 2.4.12
 
 - **Frontend**:
-  - TypeScript
+  - TypeScript 5.4+
   - highlight.js
   - Modern CSS with Flexbox
+
+- **Development & Testing**:
+  - Jest 29.7+
+  - Pytest 8.3.5
+  - ESLint 8.57+
+  - Prettier 3.2+
 
 ## Prerequisites
 
@@ -80,6 +89,58 @@ A web application that provides a chat interface for LM Studio with RAG (Retriev
    ```
 
 2. Access the application at `http://localhost:5000`
+
+## Using the Application
+
+### Chat Interface
+
+1. The main chat interface is in the center of the screen. Here you can:
+   - Type messages in the input field at the bottom
+   - Click "Send" or press Enter to submit your message
+   - View the conversation history in the message area
+   - Code snippets in responses are automatically syntax-highlighted
+
+### Document Management
+
+1. **Uploading Documents**:
+   - Use the sidebar's "Upload Document" section
+   - Click "Choose File" to select a PDF document
+   - Click "Upload PDF" to process the document
+   - Uploaded files appear in the "Processed Files" list below
+
+2. **Managing Documents**:
+   - View all processed documents in the "Processed Files" list
+   - The system will use these documents for context in your conversations
+   - Documents are processed using RAG for enhanced responses
+
+### Configuration Options
+
+1. **Model Settings** (accessible via the gear icon):
+   - Temperature (0-2): Controls response creativity
+   - Max Tokens: Limits response length
+   - Top P (0.1-1): Controls response diversity
+
+2. **Debug Options**:
+   - Toggle API Response button shows/hides raw API responses
+   - Model information displays the currently active model
+
+### Best Practices
+
+1. **For Better Responses**:
+   - Upload relevant documents before asking specific questions
+   - Adjust temperature lower (0.1-0.3) for more focused responses
+   - Adjust temperature higher (0.7-1.0) for more creative responses
+   - Use clear, specific questions for better results
+
+2. **Performance Tips**:
+   - Keep uploaded PDFs under 16MB for optimal processing
+   - Allow time for document processing after upload
+   - Use the model parameters to balance between response quality and speed
+
+### Rate Limits
+
+- Chat requests: 30 per minute
+- File uploads: 10 per hour
 
 ## Development
 
