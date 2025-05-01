@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat with LM Studio</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <main class="chat-container">
+            <h1>Chat with LM Studio</h1>
+            <div class="messages" id="messages"></div>
+            <div class="input-container">
+                <input type="text" id="userInput" placeholder="Type your message...">
+                <button id="sendButton">Send</button>
+                <div class="loading-overlay" id="sendLoadingOverlay">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </main>
+        
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h2>Upload Document</h2>
+                <div class="upload-container">
+                    <input type="file" id="pdfFile" accept=".pdf" />
+                    <button id="uploadButton">Upload PDF</button>
+                    <div class="loading-overlay" id="uploadLoadingOverlay">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h2>Processed Files</h2>
+                <div class="file-list-container">
+                    <ul class="file-list" id="fileList">
+                        <!-- Files will be added here dynamically -->
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="config-header">
+                    <h2>Configuration</h2>
+                    <button id="toggleConfigBtn" class="icon-button">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+                <div id="configPanel" class="config-panel">
+                    <!-- Model Info -->
+                    <div class="config-group">
+                        <h3>Model Information</h3>
+                        <div class="model-info">
+                            <span class="model-label">Active Model:</span>
+                            <span id="modelName" class="model-value">Loading...</span>
+                        </div>
+                        <div class="debug-section">
+                            <button id="debugToggleBtn" class="debug-toggle">
+                                <i class="fas fa-bug"></i> Toggle API Response
+                            </button>
+                            <pre id="apiDebug" class="debug-info" style="display: none;"></pre>
+                        </div>
+                    </div>
+                    
+                    <!-- Model Parameters -->
+                    <div class="config-group">
+                        <h3>Model Parameters</h3>
+                        
+                        <div class="config-item">
+                            <label for="temperature">Temperature:</label>
+                            <div class="range-container">
+                                <input type="range" id="temperature" min="0" max="2" step="0.05" value="{{ config.temperature }}">
+                                <span id="temperatureValue">{{ config.temperature }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="config-item">
+                            <label for="maxTokens">Max Tokens:</label>
+                            <div class="range-container">
+                                <input type="range" id="maxTokens" min="100" step="100" value="{{ config.max_tokens }}">
+                                <span id="maxTokensValue">{{ config.max_tokens }}</span>
+                            </div>
+                            <div class="range-info" id="maxTokensInfo"></div>
+                        </div>
+                        
+                        <div class="config-item">
+                            <label for="topP">Top P:</label>
+                            <div class="range-container">
+                                <input type="range" id="topP" min="0.1" max="1" step="0.05" value="{{ config.top_p }}">
+                                <span id="topPValue">{{ config.top_p }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- RAG Parameters -->
+                    <div class="config-group">
+                        <h3>RAG Settings</h3>
+                        
+                        <div class="config-item">
+                            <label for="contextChunks">Context Chunks:</label>
+                            <div class="range-container">
+                                <input type="range" id="contextChunks" min="1" max="10" step="1" value="{{ config.context_chunks }}">
+                                <span id="contextChunksValue">{{ config.context_chunks }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- System Prompt -->
+                    <div class="config-group">
+                        <h3>System Prompt</h3>
+                        
+                        <div class="config-item">
+                            <textarea id="systemPrompt" rows="8">{{ config.system_prompt }}</textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="config-actions">
+                        <button id="saveConfigBtn" class="secondary-button">Save Settings</button>
+                        <button id="resetConfigBtn" class="secondary-button danger">Reset Defaults</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+    
+    <script>
+        hljs.highlightAll();
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightBlock(block);
+            });
+        });
+    </script>
+    <script type="module">
+        import { App } from "{{ url_for('static', filename='js/dist/app.js') }}";
+        console.log('Starting application...');
+        window.addEventListener('DOMContentLoaded', () => {
+            App.getInstance();
+        });
+    </script>
+</body>
+</html>
