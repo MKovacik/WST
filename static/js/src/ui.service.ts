@@ -8,29 +8,35 @@ export class UiService {
   private messagesContainer: HTMLElement;
   private userInput: HTMLInputElement;
   private fileList: HTMLElement;
-  private configPanel: HTMLElement;
+  private configContent: HTMLElement | null;
   private maxTokensSlider: HTMLInputElement;
   private maxTokensInfo: HTMLElement;
-  private apiDebug: HTMLElement;
+  private apiDebug: HTMLElement | null;
 
   private constructor() {
     console.log('Initializing UI Service...');
     this.messagesContainer = document.getElementById('messages') as HTMLElement;
     this.userInput = document.getElementById('userInput') as HTMLInputElement;
     this.fileList = document.getElementById('fileList') as HTMLElement;
-    this.configPanel = document.getElementById('configPanel') as HTMLElement;
+    this.configContent = document.getElementById('configContent');
     this.maxTokensSlider = document.getElementById('maxTokens') as HTMLInputElement;
     this.maxTokensInfo = document.getElementById('maxTokensInfo') as HTMLElement;
-    this.apiDebug = document.getElementById('apiDebug') as HTMLElement;
+    this.apiDebug = document.getElementById('apiDebug');
 
     // Initialize config panel state
-    if (this.configPanel) {
-      this.configPanel.style.display = 'none';
+    if (this.configContent) {
+      this.configContent.classList.remove('active');
     }
 
     // Initialize debug info state
     if (this.apiDebug) {
       this.apiDebug.style.display = 'none';
+    }
+
+    // Setup click handler for config header
+    const configHeader = document.getElementById('toggleConfigHeader');
+    if (configHeader) {
+      configHeader.addEventListener('click', (event) => this.toggleConfigPanel(event));
     }
   }
 
@@ -136,10 +142,28 @@ export class UiService {
     }
   }
 
-  public toggleConfigPanel(): void {
+  public toggleConfigPanel(event?: Event): void {
     console.log('Toggling config panel');
-    if (this.configPanel) {
-      this.configPanel.style.display = this.configPanel.style.display === 'none' ? 'block' : 'none';
+    if (this.configContent) {
+      const isVisible = this.configContent.classList.contains('active');
+
+      if (isVisible) {
+        // Hide the panel
+        this.configContent.classList.remove('active');
+      } else {
+        // Show the panel
+        this.configContent.classList.add('active');
+      }
+
+      // Stop event propagation to prevent issues with nested buttons
+      event?.stopPropagation();
+    }
+  }
+
+  public closeConfigPanel(): void {
+    console.log('Closing config panel');
+    if (this.configContent) {
+      this.configContent.classList.remove('active');
     }
   }
 

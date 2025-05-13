@@ -119,6 +119,8 @@ h1 {
     background-color: #f8f9fa;
     border-radius: 8px;
     padding: 15px;
+    position: relative; /* Ensure this is kept for proper positioning of the config panel */
+    margin-bottom: 20px; /* Increased margin for better separation */
 }
 
 .sidebar-section h2 {
@@ -182,24 +184,77 @@ h1 {
     border-radius: 5px;
 }
 
-.config-panel {
-    background-color: white;
+.config-content {
+    background-color: #f8f9fa;
     border-radius: 8px;
     padding: 15px;
+    margin-top: 15px; /* Increased margin for better separation */
+    border: 1px solid #e9ecef;
+    display: none; /* Hidden by default */
+    overflow-y: auto; /* Add scrolling if content is too long */
+    max-height: 70vh; /* Limit height to prevent overflow */
+}
+
+.config-content.active {
+    display: block; /* Show when active */
 }
 
 .config-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.config-header:hover {
+    background-color: #f0f2f5;
+}
+
+.config-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: default;
+}
+
+.config-panel-header h2 {
+    margin: 0;
+    color: #333;
+}
+
+.config-close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #777;
+    padding: 5px;
+}
+
+.config-close-btn:hover {
+    color: #333;
+}
+
+.config-backdrop {
+    display: none;
 }
 
 .config-group {
     margin-bottom: 20px;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.config-group:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
 
 .config-group h3 {
@@ -535,65 +590,67 @@ textarea#systemPrompt {
     }
 }
 
-.config-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.config-panel {
-    margin-top: 10px;
-    padding-bottom: 10px;
-}
-
-.config-group {
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.config-group:last-of-type {
-    margin-bottom: 15px;
-    border-bottom: none;
-}
-
 .config-actions {
     display: flex;
     gap: 10px;
     margin-top: 20px;
+    justify-content: center;
+    padding-top: 15px;
+    border-top: 1px solid #e9ecef;
 }
 
 .secondary-button {
-    background-color: #6c757d !important;
+    padding: 10px 15px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    background-color: #6c757d;
+    color: white;
+    transition: background-color 0.2s;
+    min-width: 120px;
+    text-align: center;
+}
+
+.secondary-button:hover {
+    background-color: #5a6268;
 }
 
 .secondary-button.danger {
-    background-color: #dc3545 !important;
+    background-color: #dc3545;
+}
+
+.secondary-button.danger:hover {
+    background-color: #c82333;
 }
 
 .debug-section {
     margin-top: 15px;
 }
 
-.debug-toggle {
+.icon-button {
     background: none;
-    border: 1px solid #ddd;
-    padding: 8px 12px;
-    border-radius: 4px;
-    color: #495057;
+    border: none;
+    padding: 8px;
     cursor: pointer;
-    font-size: 0.9em;
+    color: #495057;
+    font-size: 18px;
+    transition: all 0.2s ease;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
 }
 
-.debug-info {
-    display: none;
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-    font-size: 0.9em;
-    white-space: pre-wrap;
+.icon-button:hover {
+    color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.icon-button:active {
+    transform: scale(0.95);
 }
 
 .config-actions {
@@ -627,19 +684,6 @@ textarea#systemPrompt {
 
 .secondary-button.danger:hover {
     background-color: #f5c2c7;
-}
-
-.icon-button {
-    background: none;
-    border: none;
-    padding: 5px;
-    cursor: pointer;
-    color: #495057;
-    font-size: 14px;
-}
-
-.icon-button:hover {
-    color: #0d6efd;
 }
 
 .config-group {
@@ -737,7 +781,7 @@ textarea#systemPrompt {
 
 .model-value {
     color: #0d6efd;
-    font-family: 'Consolas', 'Monaco', monospace;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
     font-size: 0.9em;
 }
 
@@ -749,38 +793,20 @@ textarea#systemPrompt {
 
 .debug-toggle {
     background: none;
-    border: 1px solid #dee2e6;
-    padding: 4px 8px;
-    font-size: 12px;
-    color: #6c757d;
+    border: 1px solid #ddd;
+    padding: 8px 12px;
     border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.debug-toggle:hover {
-    background: #f8f9fa;
     color: #495057;
-}
-
-.debug-toggle i {
-    font-size: 14px;
+    cursor: pointer;
+    font-size: 0.9em;
 }
 
 .debug-info {
-    margin-top: 12px;
-    padding: 12px;
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
     border-radius: 4px;
-    font-family: 'Consolas', 'Monaco', monospace;
-    font-size: 12px;
-    line-height: 1.4;
+    font-size: 0.9em;
     white-space: pre-wrap;
-    overflow-x: auto;
-    color: #495057;
-    max-height: 300px;
-    overflow-y: auto;
 }

@@ -46,13 +46,13 @@
             </div>
             
             <div class="sidebar-section">
-                <div class="config-header">
+                <div class="config-header" id="toggleConfigHeader">
                     <h2>Configuration</h2>
-                    <button id="toggleConfigBtn" class="icon-button">
+                    <button id="toggleConfigBtn" class="icon-button" title="Toggle Configuration Settings">
                         <i class="fas fa-cog"></i>
                     </button>
                 </div>
-                <div id="configPanel" class="config-panel">
+                <div id="configContent" class="config-content">
                     <!-- Model Info -->
                     <div class="config-group">
                         <h3>Model Information</h3>
@@ -135,6 +135,94 @@
             document.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightBlock(block);
             });
+            
+            // Direct DOM manipulation for toggle functionality
+            const toggleBtn = document.getElementById('toggleConfigBtn');
+            const configContent = document.getElementById('configContent');
+            
+            if (toggleBtn && configContent) {
+                // Initially hide config content
+                configContent.style.display = 'none';
+                
+                // Add click handler
+                toggleBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (configContent.style.display === 'none') {
+                        configContent.style.display = 'block';
+                    } else {
+                        configContent.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Direct handlers for save and reset buttons
+            const saveBtn = document.getElementById('saveConfigBtn');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    console.log('Save button clicked');
+                    // Submit form data via fetch
+                    const config = {
+                        temperature: parseFloat(document.getElementById('temperature').value),
+                        max_tokens: parseInt(document.getElementById('maxTokens').value),
+                        top_p: parseFloat(document.getElementById('topP').value),
+                        context_chunks: parseInt(document.getElementById('contextChunks').value),
+                        system_prompt: document.getElementById('systemPrompt').value
+                    };
+                    
+                    fetch('/save-config', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify(config)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert('Configuration saved successfully');
+                    })
+                    .catch(error => {
+                        console.error('Error saving config:', error);
+                        alert('Error saving configuration');
+                    });
+                });
+            }
+            
+            const resetBtn = document.getElementById('resetConfigBtn');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    console.log('Reset button clicked');
+                    // Reset config via fetch
+                    fetch('/reset-config', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(config => {
+                        // Update UI with reset values
+                        document.getElementById('temperature').value = config.temperature;
+                        document.getElementById('temperatureValue').textContent = config.temperature;
+                        document.getElementById('maxTokens').value = config.max_tokens;
+                        document.getElementById('maxTokensValue').textContent = config.max_tokens;
+                        document.getElementById('topP').value = config.top_p;
+                        document.getElementById('topPValue').textContent = config.top_p;
+                        document.getElementById('contextChunks').value = config.context_chunks;
+                        document.getElementById('contextChunksValue').textContent = config.context_chunks;
+                        document.getElementById('systemPrompt').value = config.system_prompt;
+                        
+                        alert('Configuration reset to defaults');
+                    })
+                    .catch(error => {
+                        console.error('Error resetting config:', error);
+                        alert('Error resetting configuration');
+                    });
+                });
+            }
         });
     </script>
     <script type="module">

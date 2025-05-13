@@ -30,6 +30,42 @@ export class App {
       this.loadModelInfo();
       this.setupEventListeners();
       this.setupRangeSliders();
+      
+      // Direct DOM manipulation for toggle functionality
+      const toggleConfigBtn = document.getElementById('toggleConfigBtn');
+      const configContent = document.getElementById('configContent');
+      
+      if (toggleConfigBtn && configContent) {
+        // Initially hide the config content
+        configContent.classList.remove('active');
+        
+        // Add click handler to toggle button
+        toggleConfigBtn.onclick = function(event) {
+          console.log('Toggle button clicked directly');
+          event.stopPropagation(); // Prevent event bubbling
+          configContent.classList.toggle('active');
+          return false; // Prevent default action
+        };
+      }
+      
+      // Direct handlers for save and reset buttons
+      const saveConfigBtn = document.getElementById('saveConfigBtn');
+      if (saveConfigBtn) {
+        saveConfigBtn.onclick = () => {
+          console.log('Save button clicked directly');
+          this.handleSaveConfig();
+          return false;
+        };
+      }
+      
+      const resetConfigBtn = document.getElementById('resetConfigBtn');
+      if (resetConfigBtn) {
+        resetConfigBtn.onclick = () => {
+          console.log('Reset button clicked directly');
+          this.handleResetConfig();
+          return false;
+        };
+      }
     });
   }
 
@@ -60,7 +96,16 @@ export class App {
     // Config panel toggle
     const toggleConfigBtn = document.getElementById('toggleConfigBtn');
     if (toggleConfigBtn) {
-      toggleConfigBtn.addEventListener('click', () => this.uiService.toggleConfigPanel());
+      toggleConfigBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.uiService.toggleConfigPanel();
+      });
+    }
+
+    // Config header toggle
+    const configHeader = document.getElementById('toggleConfigHeader');
+    if (configHeader) {
+      configHeader.addEventListener('click', () => this.uiService.toggleConfigPanel());
     }
 
     // Debug info toggle
@@ -69,16 +114,26 @@ export class App {
       debugToggleBtn.addEventListener('click', () => this.uiService.toggleDebugInfo());
     }
 
-    // Save config button
+    // Save config button - Direct implementation with event delegation
     const saveConfigBtn = document.getElementById('saveConfigBtn');
     if (saveConfigBtn) {
-      saveConfigBtn.addEventListener('click', () => this.handleSaveConfig());
+      saveConfigBtn.onclick = (e) => {
+        e.stopPropagation();
+        console.log('Save config button clicked - using onclick');
+        this.handleSaveConfig();
+        return false;
+      };
     }
 
-    // Reset config button
+    // Reset config button - Direct implementation with event delegation
     const resetConfigBtn = document.getElementById('resetConfigBtn');
     if (resetConfigBtn) {
-      resetConfigBtn.addEventListener('click', () => this.handleResetConfig());
+      resetConfigBtn.onclick = (e) => {
+        e.stopPropagation();
+        console.log('Reset config button clicked - using onclick');
+        this.handleResetConfig();
+        return false;
+      };
     }
   }
 
